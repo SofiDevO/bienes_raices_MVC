@@ -6,7 +6,7 @@ block contenido
         h2.text-3xl.text-lime-600.font-extrabold.text-center= pagina
         div(class="mt-8 mx-auto max-w-md")
             div.bg-white.py-8.px-4.shadow
-                form.space-y-5
+                form.space-y-5(method="POST" action="/auth/register")
                     div
                         label.block.text-sm.uppercase.tetxt-gray-400.mb-2.font-bold(for="nombre") Tu nombre
                         input(type="text" placeholder="Tu nombre" name="nombre" id="nombre" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-teal-300")
@@ -19,4 +19,7 @@ block contenido
                     div
                         label.block.text-sm.uppercase.tetxt-gray-400.mb-2.font-bold(for="repetir_password") Repetir Password
                         input(type="password" placeholder="Repite tu password" name="repetir_password" id="repetir_password" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-teal-300")
+                    div.flex.items-center.justify-between
+                        a(class="text-gray-500 text-xs"  href="/auth/login") ¿Ya tienes cuenta? Inica Sesión
+                        a(class="text-gray-500 text-xs"  href="/auth/olvide-password") Olvidé mi password
                     input(type="submit", value="Crear Cuenta" class="w-full bg-sky-700	text-white font-bold hover:bg-black py-3 cursor-pointer rounded-md ")

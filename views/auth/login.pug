@@ -13,4 +13,9 @@ block contenido
                     div
                         label.block.text-sm.uppercase.tetxt-gray-400.mb-2.font-bold(for="password") Tu Password
                         input(type="password" placeholder="Tu password" name="password" id="password" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-teal-300")
-                    input(type="submit", value="Login" class="w-full bg-sky-700	text-white font-bold hover:bg-black py-3 cursor-pointer rounded-md ")
+
+
+                    div.flex.items-center.justify-between
+                        a(class="text-gray-500 text-xs" href="/auth/register") No tienes cuenta? Crear una
+                        a(class="text-gray-500 text-xs" href="/auth/olvide-password") Olvidé mi password
+                    input(type="submit" value="Login" class="w-full bg-sky-700	text-white font-bold hover:bg-black py-3 cursor-pointer rounded-md ")

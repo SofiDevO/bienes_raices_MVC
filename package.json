@@ -37,6 +37,9 @@
     "tailwindcss": "^3.4.3"
   },
   "dependencies": {
-    "pug": "^3.0.2"
+    "dotenv": "^16.4.5",
+    "mysql2": "^3.9.7",
+    "pug": "^3.0.2",
+    "sequelize": "^6.37.3"
   }
 }
