@@ -1,131 +1,147 @@
-// Importamos funciones de express-validator para realizar validaciones en los datos del formulario
 import { check, validationResult } from "express-validator";
-// Importamos la función generateId desde el archivo de helpers para generar un token
 import { generateId } from "../helpers/tokens.js";
-// Importamos el modelo Usuario desde el archivo correspondiente
 import Usuario from "../models/Usuario.js";
-// Importamos la función para enviar correos electrónicos de registro
 import { registerEmail } from "../helpers/emails.js";
 
 // Controlador para mostrar el formulario de login
 const formularioLogin = (req, res) => {
   res.render("auth/login", {
-    pagina: "Iniciar Sesión", // Título de la página
+    pagina: "Iniciar Sesión",
+    csrfToken: req.csrfToken(), // Include CSRF token
   });
 };
 
 // Controlador para mostrar el formulario de registro
 const formularioRegistro = (req, res) => {
   res.render("auth/register", {
-    pagina: "Crear Cuenta", // Título de la página
+    pagina: "Crear Cuenta",
+    csrfToken: req.csrfToken(), // Include CSRF token
   });
 };
 
 // Controlador para manejar el registro de un nuevo usuario
 const registrar = async (req, res) => {
-  // Validación de los campos del formulario
   await check("nombre")
-    .notEmpty() // Verifica que el campo no esté vacío
-    .withMessage("El nombre es requerido") // Mensaje de error si está vacío
-    .run(req); // Ejecuta la validación
+    .notEmpty()
+    .withMessage("El nombre es requerido")
+    .trim()
+    .run(req);
 
   await check("email")
-    .notEmpty() // Verifica que el campo no esté vacío
-    .withMessage("El email es requerido") // Mensaje de error si está vacío
-    .isEmail() // Verifica que el valor sea un email válido
-    .withMessage("El email no es válido") // Mensaje de error si no es un email válido
-    .run(req); // Ejecuta la validación
+    .notEmpty()
+    .withMessage("El email es requerido")
+    .isEmail()
+    .withMessage("El email no es válido")
+    .normalizeEmail()
+    .run(req);
 
   await check("password")
-    .isLength({ min: 6 }) // Verifica que el password tenga al menos 6 caracteres
-    .withMessage("El password debe ser de al menos 6 caracteres") // Mensaje de error si es muy corto
-    .run(req); // Ejecuta la validación
+    .isLength({ min: 6 })
+    .withMessage("El password debe ser de al menos 6 caracteres")
+    .trim()
+    .run(req);
 
   await check("repetir_password")
-    .equals(req.body.password) // Verifica que repetir_password coincida con password
-    .withMessage("Las contraseñas no son iguales") // Mensaje de error si no coinciden
-    .run(req); // Ejecuta la validación
+    .equals(req.body.password)
+    .withMessage("Las contraseñas no son iguales")
+    .run(req);
 
-  // Verificar si hay errores en las validaciones
-  let resultado = validationResult(req);
+  const resultado = validationResult(req);
 
-  // Si hay errores, renderizamos el formulario con los errores
   if (!resultado.isEmpty()) {
     return res.render("auth/register", {
       pagina: "Crear Cuenta",
-      errores: resultado.array(), // Array de errores de validación
+      errores: resultado.array(),
       usuario: {
-        nombre: req.body.nombre, // Retenemos el nombre ingresado
-        email: req.body.email, // Retenemos el email ingresado
+        nombre: req.body.nombre,
+        email: req.body.email,
       },
+      csrfToken: req.csrfToken(), // Include CSRF token
     });
   }
 
-  // Extraer los datos del formulario
-  const { nombre, email, password } = req.body;
+  try {
+    const { nombre, email, password } = req.body;
+    const existeUsuario = await Usuario.findOne({ where: { email } });
 
-  // Verificar que el usuario no esté duplicado
-  const existeUsuario = await Usuario.findOne({ where: { email } });
-  if (existeUsuario) {
-    return res.render("auth/register", {
+    if (existeUsuario) {
+      return res.render("auth/register", {
+        pagina: "Crear Cuenta",
+        errores: [{ msg: "El usuario ya está registrado" }],
+        usuario: {
+          nombre: req.body.nombre,
+          email: req.body.email,
+        },
+        csrfToken: req.csrfToken(), // Include CSRF token
+      });
+    }
+
+    const usuario = await Usuario.create({
+      nombre,
+      email,
+      password,
+      token: generateId(),
+    });
+
+    await registerEmail({
+      nombre: usuario.nombre,
+      email: usuario.email,
+      token: usuario.token,
+    });
+
+    res.render("templates/mensaje", {
+      pagina: "Cuenta creada correctamente",
+      mensaje: "Hemos enviado un email de confirmación, presiona en el enlace.",
+    });
+  } catch (error) {
+    console.error("Error al registrar usuario:", error);
+    res.render("auth/register", {
       pagina: "Crear Cuenta",
-      errores: [{ msg: "El usuario ya está registrado" }], // Mensaje de error si el usuario ya existe
+      errores: [{ msg: "Hubo un error al registrar el usuario, intenta de nuevo." }],
       usuario: {
-        nombre: req.body.nombre, // Retenemos el nombre ingresado
-        email: req.body.email, // Retenemos el email ingresado
+        nombre: req.body.nombre,
+        email: req.body.email,
       },
+      csrfToken: req.csrfToken(), // Include CSRF token
     });
   }
-
-  // Almacenar un nuevo usuario en la base de datos
-  const usuario = await Usuario.create({
-    nombre,
-    email,
-    password,
-    token: generateId(), // Generar y asignar un token de verificación (en un caso real, debería ser generado dinámicamente)
-  });
-
-  // Envia email de confirmación
-  registerEmail({
-    nombre: usuario.nombre,
-    email: usuario.email,
-    token: usuario.token,
-  });
-
-  // Mostrar mensaje de confirmación
-  res.render("templates/mensaje", {
-    pagina: "Cuenta creada correctamente",
-    mensaje: "Hemos enviado un email de confirmación, presiona en el enlace.",
-  });
 };
 
-// Función para comprobar cuenta
+// Función para confirmar cuenta
 const confirmar = async (req, res, next) => {
-  const { token } = req.params; // Extraemos el token de los parámetros de la URL
+  const { token } = req.params;
 
-  console.log(token); // Imprimimos el token en la consola para depuración
-  // Verificar si el token es válido
-  const usuario = await Usuario.findOne({ where: { token } });
-  console.log(usuario);
-  if (!usuario) {
-    return res.render("auth/confirmar-cuenta", {
+  try {
+    const usuario = await Usuario.findOne({ where: { token } });
+    if (!usuario) {
+      return res.render("auth/confirmar-cuenta", {
+        pagina: "Error al confirmar tu cuenta",
+        mensaje: "Hubo un error al confirmar tu cuenta, intenta de nuevo.",
+        error: true,
+      });
+    }
+
+    // Confirmar cuenta (consider adding actual account confirmation logic)
+    // e.g., usuario.confirmado = true; await usuario.save();
+    next();
+  } catch (error) {
+    console.error("Error al confirmar cuenta:", error);
+    res.render("auth/confirmar-cuenta", {
       pagina: "Error al confirmar tu cuenta",
       mensaje: "Hubo un error al confirmar tu cuenta, intenta de nuevo.",
-      error: true
+      error: true,
     });
   }
-  // confirmar cuenta
-  next(); // Llamamos a next() para continuar con el siguiente middleware
 };
 
 // Controlador para mostrar el formulario de recuperación de contraseña
 const formularioRecuperarPassword = (req, res) => {
   res.render("auth/forgot-password", {
-    pagina: "Recuperar contraseña", // Título de la página
+    pagina: "Recuperar contraseña",
+    csrfToken: req.csrfToken(), // Include CSRF token
   });
 };
 
-// Exportamos los controladores para usarlos en otras partes de la aplicación
 export {
   formularioLogin,
   formularioRegistro,
