@@ -1,8 +1,9 @@
 import express from 'express';
-import { doubleCsrf } from 'csrf-csrf';
+import csrf from "csurf";
 import cookieParser from 'cookie-parser';
 import usuarioRoutes from './routes/usuarioRoutes.js';
 import db from './config/db.js';
+import csurf from 'csurf';
 
 // Crear la app
 const app = express();
@@ -14,16 +15,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Habilitar CSRF
-const { doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET || 'default_secret',
-  cookieName: 'XSRF-TOKEN',
-  cookieOptions: { httpOnly: true, secure: process.env.NODE_ENV === 'production' },
-  size: 64,
-  ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
-});
+app.use(csurf({cookie: true}));
 
-// Aplicar CSRF protection a las rutas necesarias
-app.use(doubleCsrfProtection);
 
 
 // Conexión a Base de datos
