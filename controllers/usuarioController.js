@@ -1,12 +1,11 @@
 import { check, validationResult } from "express-validator";
 import { generateId } from "../helpers/tokens.js";
 import Usuario from "../models/Usuario.js";
-import {registerEmail} from "../helpers/emails.js";
+import { registerEmail, forgotPassword } from "../helpers/emails.js";
 // Controlador para mostrar el formulario de login
 const formularioLogin = (req, res) => {
   res.render("auth/login", {
     pagina: "Iniciar Sesión",
-
   });
 };
 
@@ -14,13 +13,13 @@ const formularioLogin = (req, res) => {
 const formularioRegistro = (req, res) => {
   res.render("auth/register", {
     pagina: "Crear Cuenta",
-    csrfToken: req.csrfToken()
+    csrfToken: req.csrfToken(),
   });
 };
 
 // Controlador para manejar el registro de un nuevo usuario
 const registrar = async (req, res) => {
-//  validacion
+  //  validacion
   await check("nombre")
     .notEmpty()
     .withMessage("El nombre es requerido")
@@ -44,8 +43,7 @@ const registrar = async (req, res) => {
     .withMessage("Las contraseñas no son iguales")
     .run(req);
 
-  let  resultado = validationResult(req);
-
+  let resultado = validationResult(req);
 
   // Verificar que el resultado esté vacío
   if (!resultado.isEmpty()) {
@@ -57,10 +55,8 @@ const registrar = async (req, res) => {
         nombre: req.body.nombre,
         email: req.body.email,
       },
-
     });
   }
-
   try {
     const { nombre, email, password } = req.body;
     const existeUsuario = await Usuario.findOne({ where: { email } });
@@ -73,7 +69,6 @@ const registrar = async (req, res) => {
           nombre: req.body.nombre,
           email: req.body.email,
         },
-
       });
     }
 
@@ -98,12 +93,13 @@ const registrar = async (req, res) => {
     console.error("Error al registrar usuario:", error);
     res.render("auth/register", {
       pagina: "Crear Cuenta",
-      errores: [{ msg: "Hubo un error al registrar el usuario, intenta de nuevo." }],
+      errores: [
+        { msg: "Hubo un error al registrar el usuario, intenta de nuevo." },
+      ],
       usuario: {
         nombre: req.body.nombre,
         email: req.body.email,
       },
-
     });
   }
 };
@@ -138,18 +134,14 @@ const confirmar = async (req, res, next) => {
 const formularioRecuperarPassword = (req, res) => {
   res.render("auth/forgot-password", {
     pagina: "Recuperar contraseña",
-    csrfToken: req.csrfToken()
-
+    csrfToken: req.csrfToken(),
   });
 };
 
-const resetPassword  = async (req, res)=>{
-  await check("email")
-  .isEmail()
-  .withMessage("El email no es válido")
-  .run(req);
+const resetPassword = async (req, res) => {
+  await check("email").isEmail().withMessage("El email no es válido").run(req);
 
-  let  resultado = validationResult(req);
+  let resultado = validationResult(req);
 
   // Verificar que el resultado esté vacío
   if (!resultado.isEmpty()) {
@@ -160,10 +152,41 @@ const resetPassword  = async (req, res)=>{
     });
   }
   // Buscar al usuario
+  const { email } = req.body;
+  const usuario = await Usuario.findOne({ where: { email } });
+  if (!usuario) {
+    return res.render("auth/forgot-password", {
+      pagina: "El email no es váliddo",
+      csrfToken: req.csrfToken(),
+      errores: [{ msg: "El email no está registrado en la plataforma" }],
+    });
+  }
 
+  // Generar un token y enviar el email
+  usuario.token = generateId();
+  await usuario.save();
 
-}
+  //  Enviar Email
+  forgotPassword({
+    email: usuario.email,
+    nombre: usuario.nombre,
+    token: usuario.token
+  })
 
+  // renderizar mensaje
+  res.render("templates/mensaje", {
+    pagina: "Restablece tu password",
+    mensaje: "Hemos enviado un email con las instrucciones",
+  });
+};
+
+const comprobarToken = (req, res, next) => {
+  next();
+};
+
+const newPassword = (req, res, next) => {
+  next();
+};
 
 export {
   formularioLogin,
@@ -171,5 +194,7 @@ export {
   registrar,
   confirmar,
   formularioRecuperarPassword,
-  resetPassword
+  resetPassword,
+  comprobarToken,
+  newPassword,
 };
