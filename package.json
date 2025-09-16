@@ -1,50 +1,45 @@
 {
   "name": "bienes_raices_mvc",
   "version": "1.0.0",
-  "description": "Node js Project",
+  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node ./index.js",
-    "server": "nodemon ./index.js",
-    "css": "postcss public/css/tailwind.css -o public/css/app.css --watch"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js --watch",
+    "server": "nodemon index.js --watch",
+    "tailwind": "npx @tailwindcss/cli -i ./public/css/tailwind.css -o ./public/css/main.css --watch --minify",
+    "tailwind:build": "tailwindcss -i ./public/css/tailwind.css -o ./public/css/main.css --minify",
+    "css": "postcss public/css/tailwind.css -o public/css/main.css --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/SofiDevO/bienes_raices_MVC.git"
+    "url": "git@gh-sofidev:SofiDevO/bienes_raices_MVC.git"
   },
   "keywords": [
-    "nodejs",
+    "bienes",
+    "raices",
     "mvc",
-    "Pug",
-    "Tailwind",
-    "MySQL",
-    "Sequlize",
-    "javascript"
+    "nodejs",
+    "javascript",
+    "express",
+    "sequelize",
+    "mysql",
+    "sofidev"
   ],
-  "author": "SofiDev 'sofi.dev@outlook.com'",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/SofiDevO/bienes_raices_MVC/issues"
-  },
-  "homepage": "https://github.com/SofiDevO/bienes_raices_MVC#readme",
-  "devDependencies": {
-    "autoprefixer": "^10.4.19",
-    "express": "^4.19.2",
-    "nodemon": "^3.1.0",
-    "postcss": "^8.4.38",
-    "postcss-cli": "^11.0.0",
-    "tailwindcss": "^3.4.3"
-  },
+  "author": "SofiDev: contact@sofidev.top",
+  "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cookie-parser": "^1.4.6",
-    "csurf": "^1.11.0",
-    "dotenv": "^16.4.5",
-    "express-validator": "^7.1.0",
-    "mysql2": "^3.9.7",
-    "nodemailer": "^6.9.14",
-    "pug": "^3.0.2",
-    "sequelize": "^6.37.3"
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10",
+    "pug": "^3.0.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@tailwindcss/cli": "^4.1.13",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.1.13"
   }
 }

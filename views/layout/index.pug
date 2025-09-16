@@ -1,13 +1,10 @@
 doctype html
-
-html(lang="es")
+html(lang="en")
     head
         meta(charset="UTF-8")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
-
-        title Bienes Raíces | #{pagina}
-        link(rel="stylesheet", href="/css/app.css")
-        link(rel="icon" href="../img/bomb.png" type="image/x-icon")
-    body.min-h-screen.bg-slate-100
-        main(class="mx-auto container mt-10 px-2")
-            block contenido
+        title Bienes raíces | #{page}
+        link(rel="stylesheet", href="/css/main.css", attr)
+    body.min-h-screen.bg-gray-50
+        main(class="container mx-auto mt-10 px-2")
+            block mainContent

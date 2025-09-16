@@ -1,21 +1,21 @@
 extends ../layout/index
-block contenido
-    section(class="py-10")
-        h1(class="text-4xl my-10 font-extrabold text-center") Bienes
-            span(class="font-normal") Raíces
-        h2.text-3xl.text-lime-600.font-extrabold.text-center= pagina
-        div(class="mt-8 mx-auto max-w-md")
-            div.bg-white.py-8.px-4.shadow
-                form.space-y-5
-                    div
-                        label.block.text-sm.uppercase.tetxt-gray-400.mb-2.font-bold(for="email") Tu e-mail
-                        input(type="email" placeholder="Tu e-mail" name="mail" id="mail" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-teal-300")
-                    div
-                        label.block.text-sm.uppercase.tetxt-gray-400.mb-2.font-bold(for="password") Tu Password
-                        input(type="password" placeholder="Tu password" name="password" id="password" class="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-teal-300")
+block mainContent
+    section.py-10
+        h1.text-center.text-4xl.font-extrabold Bienes
+            span.font-normal Raíces
+        h2.text-center.text-lg.mt-2= page
 
+        .mt-8.mx-auto.max-w-md
+            .bg-white.py-8.px-4.shadow.space-y-3
+                form.space-y-4
+                    div
+                        label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="email") Tu correo electrónico
+                        input#email.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholder-gray-400(placeholder="Tu correo electrónico", type="email", name="email")
+                    div
+                        label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="password")  Password
+                        input#password.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholder-gray-400(placeholder="Tu password", type="password", name="password")
+                    div.flex.justify-between.items-center
+                        a(href="/auth/register", class="text-sm text-gray-600 hover:text-violet-800 ") ¿Aún no tienes una cuenta? Crea una
+                        a(href="/auth/forgot-password", class="text-sm text-gray-600 hover:text-violet-800 ") ¿Olvidaste tu password?
 
-                    div.flex.items-center.justify-between
-                        a(class="text-gray-500 text-xs" href="/auth/register") No tienes cuenta? Crear una
-                        a(class="text-gray-500 text-xs" href="/auth/forgot-password") Olvidé mi password
-                    input(type="submit" value="Login" class="w-full bg-sky-700	text-white font-bold hover:bg-black py-3 cursor-pointer rounded-md ")
+                    input(type="submit", value="Iniciar Sesión", class="bg-violet-600 w-full text-white uppercase font-bold py-2 rounded hover:cursor-pointer hover:bg-violet-700 transition-colors")
