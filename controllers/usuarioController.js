@@ -4,6 +4,11 @@ const registerForm = (req, res) => {
     });
 }
 
+const register = (req, res) => {
+    console.log(req.body);
+    res.send('Registro exitoso');
+}
+
 const loginForm = (req, res) => {
     res.render('auth/login', {
         page: 'Iniciar Sesión'
@@ -18,5 +23,6 @@ const forgotPasswordForm = (req, res) => {
 export {
     loginForm,
     registerForm,
+    register,
     forgotPasswordForm
 }
