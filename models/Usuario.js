@@ -1,4 +1,4 @@
-import { Sequelize , DataTypes } from "sequelize";
+import {DataTypes} from "sequelize";
 import db from "../config/db.js";
 
 const Usuario = db.define('usuarios', {
@@ -17,3 +17,5 @@ const Usuario = db.define('usuarios', {
     token:DataTypes.STRING,
     confirmed: DataTypes.BOOLEAN
 });
+
+export default Usuario;

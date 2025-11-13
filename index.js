@@ -6,9 +6,14 @@ import chalk from 'chalk';
 // create app
 const app = express();
 
+// enable reading form data
+app.use(express.urlencoded({extended: true}));
+
+
 // conect to db
 try {
   await db.authenticate();
+  db.sync();
   console.log(chalk.green('Database connected on port 🚀: 3307'));
 
 } catch (error) {
