@@ -4,38 +4,41 @@ block mainContent
         h1.text-center.text-4xl.font-extrabold Bienes
             span.font-normal Raíces
         h2.text-center.text-lg.mt-2= page
-
+        if errors
+            each error in errors
+                if error.msg == 'El usuario ya está registrado'
+                    p.text-center.text-red-500.mt-4= error.msg
         .mt-8.mx-auto.max-w-md
             .bg-white.py-8.px-4.shadow.space-y-3
-                form.space-y-4(method="POST", action="/auth/register" novalidate)
+                form.space-y-4(method="POST" action="/auth/register" novalidate)
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="name") Tu nombre
-                        input#name.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholde-gray-400(placeholder="Tu nombre", type="text", name="name" value=user? user.name : '')
+                        input#name.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholde-gray-400(placeholder="Tu nombre" type="text" name="name" value=user ? user.name : '')
                         if errors
                             each error in errors
                                 if error.path == 'name'
                                     p.text-red-500.text-xs.mt-1= error.msg
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="email") Tu correo electrónico
-                        input#email.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholder-gray-400(placeholder="Tu correo electrónico", type="email", name="email" value=user ? user.email : '')
+                        input#email.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholder-gray-400(placeholder="Tu correo electrónico" type="email" name="email" value=user ? user.email : '')
                         if errors
                             each error in errors
                                 if error.path == 'email'
                                     p.text-red-500.text-xs.mt-1= error.msg
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="password")  Password
-                        input#password.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholder-gray-400(placeholder="Tu password", type="password", name="password")
+                        input#password.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholder-gray-400(placeholder="Tu password" type="password" name="password")
                         if errors
                             each error in errors
                                 if error.path == 'password'
                                     p.text-red-500.text-xs.mt-1= error.msg
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="repit_password") Repetir Password
-                        input#repit_password.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholder-gray-400(placeholder="Repíte tu password", type="password", name="repit_password")
+                        input#repit_password.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholder-gray-400(placeholder="Repíte tu password" type="password" name="repit_password")
                         if errors
                             each error in errors
                                 if error.path == 'repit_password'
                                     p.text-red-500.text-xs.mt-1= error.msg
                         div.mt-4
-                        a(href="/auth/login", class=" text-sm text-gray-600 hover:text-violet-800 ") ¿Ya tienes una cuenta? Inicia sesión
-                    input(type="submit", value="Crear Cuenta", class="bg-violet-600 w-full text-white uppercase font-bold py-2 rounded hover:cursor-pointer hover:bg-violet-700 transition-colors")
+                        a(href="/auth/login" class=" text-sm text-gray-600 hover:text-violet-800 ") ¿Ya tienes una cuenta? Inicia sesión
+                    input(type="submit" value="Crear Cuenta" class="bg-violet-600 w-full text-white uppercase font-bold py-2 rounded hover:cursor-pointer hover:bg-violet-700 transition-colors")

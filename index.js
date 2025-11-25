@@ -6,6 +6,7 @@ import chalk from 'chalk';
 // create app
 const app = express();
 
+// app.use(express.json());
 // enable reading form data
 app.use(express.urlencoded({extended: true}));
 
