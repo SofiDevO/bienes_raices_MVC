@@ -8,6 +8,8 @@ const registerForm = (req, res) => {
 }
 
 const register = async (req, res) => {
+  const { name, email, password } = req.body;
+
   // validation
   await check("name")
     .notEmpty()
@@ -25,7 +27,7 @@ const register = async (req, res) => {
     .run(req);
   // Validate password confirmation
   await check("repit_password")
-    .equals(req.body.password)
+    .equals(password)
     .withMessage("Los passwords no son iguales")
     .run(req);
 
@@ -38,28 +40,34 @@ const register = async (req, res) => {
       page: "Crear Cuenta",
       errors: result.array(),
       user: {
-        name: req.body.name,
-        email: req.body.email,
+        name,
+        email,
       },
     });
   }
   // Check if user is already registered
-  const userExist = await User.findOne({ where: { email: req.body.email } });
+  const userExist = await User.findOne({ where: { email } });
   if (userExist) {
     return res.render("auth/register", {
       page: "Crear Cuenta",
       errors: [{ msg: "El usuario ya está registrado" }],
       user: {
-        name: req.body.name,
-        email: req.body.email,
+        name,
+        email,
       },
     });
   }
 
-  console.log(userExist);
-//   res.json(result.array());
 
-const user = await User.create(req.body);
+// Create the user
+// const user = await User.create(req.body);
+
+const user = await User.create({
+    name,
+    email,
+    password,
+    token: 123
+})
 res.json(user);
 }
 
