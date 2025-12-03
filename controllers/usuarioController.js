@@ -1,6 +1,6 @@
 import {check,  validationResult} from 'express-validator'
 import User from '../models/Usuario.js';
-
+import { generateId } from '../helpers/tokens.js';
 const registerForm = (req, res) => {
     res.render('auth/register', {
         page: 'Crear Cuenta'
@@ -59,22 +59,14 @@ const register = async (req, res) => {
   }
 
 
-// Create the user
-// const user = await User.create(req.body);
-
 const user = await User.create({
     name,
     email,
     password,
-    token: 123
+    token: generateId()
 })
 res.json(user);
 }
-
-
-
-// Create the user
-
 
 
 
