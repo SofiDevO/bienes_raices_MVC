@@ -65,7 +65,9 @@ const user = await User.create({
     password,
     token: generateId()
 })
-res.json(user);
+// res.json(user);
+// Mostrar mensaje de confirmación
+
 }
 
 
@@ -79,6 +81,7 @@ const forgotPasswordForm = (req, res) => {
     res.render('auth/forgot-password', {
         page: 'Recuperar Contraseña'
     });
+
 }
 
 export {
