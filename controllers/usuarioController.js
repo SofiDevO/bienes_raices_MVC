@@ -67,9 +67,9 @@ const user = await User.create({
 })
 // res.json(user);
 // Mostrar mensaje de confirmación
-  res.render('templates/mensaje.pug', {
+  res.render('templates/message.pug', {
     page:'Cuenta Creada Correctamente',
-    mensaje: 'Hemos enviado un correo de confirmación, presiona el enlace'
+    message: 'Hemos enviado un correo de confirmación, presiona el enlace'
   })
 }
 
