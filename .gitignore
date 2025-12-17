@@ -4,3 +4,7 @@ npm-debug.log
 dist/
 build/
 *.log
+.env*
+.flaskenv*
+!.env.project
+!.env.vault
