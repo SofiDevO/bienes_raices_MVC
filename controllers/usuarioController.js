@@ -1,7 +1,10 @@
 import { check, validationResult } from "express-validator";
+
 import User from "../models/Usuario.js";
 import { generateId } from "../helpers/tokens.js";
+
 import { registerEmail } from "../helpers/emails.js";
+
 const registerForm = (req, res) => {
   res.render("auth/register", {
     page: "Crear Cuenta",
@@ -57,7 +60,7 @@ const register = async (req, res) => {
         email,
       },
     });
-  }
+  };
 
   const user = await User.create({
     name,
@@ -85,10 +88,12 @@ const loginForm = (req, res) => {
     page: "Iniciar Sesión",
   });
 };
+
 const forgotPasswordForm = (req, res) => {
   res.render("auth/forgot-password", {
     page: "Recuperar Contraseña",
   });
 };
+
 
 export { loginForm, registerForm, register, forgotPasswordForm };
