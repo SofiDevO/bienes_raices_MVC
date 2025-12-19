@@ -1,14 +1,16 @@
 import nodemailer from 'nodemailer';
+
 const registerEmail = async (data) => {
-  var transport = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
+  const transport = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port:  process.env.EMAIL_PORT,
     auth: {
-      user: "652174d220c6df",
-      pass: "8157723341bc0c",
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
     },
   });
+  const { name, email, token } = data;
+  await transport.sendMail()
+
 };
-
-
 export { registerEmail };

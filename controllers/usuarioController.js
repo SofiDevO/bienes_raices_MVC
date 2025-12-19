@@ -1,11 +1,12 @@
-import {check,  validationResult} from 'express-validator'
-import User from '../models/Usuario.js';
-import { generateId } from '../helpers/tokens.js';
+import { check, validationResult } from "express-validator";
+import User from "../models/Usuario.js";
+import { generateId } from "../helpers/tokens.js";
+import { registerEmail } from "../helpers/emails.js";
 const registerForm = (req, res) => {
-    res.render('auth/register', {
-        page: 'Crear Cuenta'
-    });
-}
+  res.render("auth/register", {
+    page: "Crear Cuenta",
+  });
+};
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
@@ -58,38 +59,36 @@ const register = async (req, res) => {
     });
   }
 
-
-const user = await User.create({
+  const user = await User.create({
     name,
     email,
     password,
-    token: generateId()
-})
-// res.json(user);
-// Mostrar mensaje de confirmación
-  res.render('templates/message.pug', {
-    page:'Cuenta Creada Correctamente',
-    message: 'Hemos enviado un correo de confirmación, presiona el enlace'
-  })
-}
+    token: generateId(),
+  });
 
+  // Send confirmation email
 
+  registerEmail({
+    name: user.name,
+    email: user.email,
+    token: user.token,
+  });
+
+  res.render("templates/message.pug", {
+    page: "Cuenta Creada Correctamente",
+    message: "Hemos enviado un correo de confirmación, presiona el enlace",
+  });
+};
 
 const loginForm = (req, res) => {
-    res.render('auth/login', {
-        page: 'Iniciar Sesión'
-    });
-}
+  res.render("auth/login", {
+    page: "Iniciar Sesión",
+  });
+};
 const forgotPasswordForm = (req, res) => {
-    res.render('auth/forgot-password', {
-        page: 'Recuperar Contraseña'
-    });
+  res.render("auth/forgot-password", {
+    page: "Recuperar Contraseña",
+  });
+};
 
-}
-
-export {
-    loginForm,
-    registerForm,
-    register,
-    forgotPasswordForm
-}
+export { loginForm, registerForm, register, forgotPasswordForm };
