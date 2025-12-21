@@ -1,5 +1,5 @@
 import express from 'express';
-import usuarioRoutes from './routes/usarioRoutes.js';
+import usuarioRoutes from './routes/userRouter.js';
 import db from './config/db.js';
 import chalk from 'chalk';
 
@@ -33,7 +33,7 @@ app.use("/auth", usuarioRoutes);
 
 
 // definir puerto
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.listen(port , () => {
   console.log(chalk.magentaBright.bgBlack(`Servidor corriendo en http://localhost:${port}`));
 });

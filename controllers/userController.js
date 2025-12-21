@@ -83,6 +83,27 @@ const register = async (req, res) => {
   });
 };
 
+// Confirm account by email
+const emailConfirmation = async (req, res) => {
+  const {token} = req.params;
+
+  // verify if token is valid
+  const user = await User.findOne({where: {token}})
+  if (!user) {
+    return res.render('auth/account-confirmation', {
+      page:'Error al confirmar cuenta',
+      message: 'Hubo un error alconfirmar tucuenta. Intentalo de nuevo',
+      error:true
+    })
+
+  }
+
+  // Confirm acc
+
+
+
+};
+
 const loginForm = (req, res) => {
   res.render("auth/login", {
     page: "Iniciar Sesión",
@@ -96,4 +117,4 @@ const forgotPasswordForm = (req, res) => {
 };
 
 
-export { loginForm, registerForm, register, forgotPasswordForm };
+export { loginForm, registerForm, emailConfirmation, register, forgotPasswordForm };
