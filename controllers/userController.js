@@ -1,4 +1,5 @@
 import { check, validationResult } from "express-validator";
+import { generateToken } from "../config/csrf.js";
 
 import User from "../models/Usuario.js";
 import { generateId } from "../helpers/tokens.js";
@@ -8,6 +9,7 @@ import { registerEmail } from "../helpers/emails.js";
 const registerForm = (req, res) => {
   res.render("auth/register", {
     page: "Crear Cuenta",
+    csrfToken: generateToken(req, res),
   });
 };
 
@@ -42,6 +44,7 @@ const register = async (req, res) => {
   if (!result.isEmpty()) {
     return res.render("auth/register", {
       page: "Crear Cuenta",
+      csrfToken: generateToken(req, res),
       errors: result.array(),
       user: {
         name,
@@ -54,6 +57,7 @@ const register = async (req, res) => {
   if (userExist) {
     return res.render("auth/register", {
       page: "Crear Cuenta",
+      csrfToken: generateToken(req, res),
       errors: [{ msg: "El usuario ya está registrado" }],
       user: {
         name,
@@ -85,34 +89,40 @@ const register = async (req, res) => {
 
 // Confirm account by email
 const emailConfirmation = async (req, res) => {
-  const {token} = req.params;
+  const { token } = req.params;
 
   // verify if token is valid
-  const user = await User.findOne({where: {token}})
+  const user = await User.findOne({ where: { token } });
   if (!user) {
-    return res.render('auth/account-confirmation', {
-      page:'Error al confirmar cuenta',
-      message: 'Hubo un error alconfirmar tucuenta. Intentalo de nuevo',
-      error:true
-    })
-
+    return res.render("auth/account-confirmation", {
+      page: "Error al confirmar cuenta",
+      message: "Hubo un error alconfirmar tucuenta. Intentalo de nuevo",
+      error: true,
+    });
   }
 
   // Confirm acc
+  user.token = null;
+  user.confirmed = true;
+  await user.save();
 
-
-
+  res.render("auth/account-confirmation", {
+    page: "Cuenta confirmada",
+    message: "La cuenta se confirmó correctamente",
+  });
 };
 
 const loginForm = (req, res) => {
   res.render("auth/login", {
     page: "Iniciar Sesión",
+    csrfToken: generateToken(req, res),
   });
 };
 
 const forgotPasswordForm = (req, res) => {
   res.render("auth/forgot-password", {
     page: "Recuperar Contraseña",
+    csrfToken: generateToken(req, res),
   });
 };
 

@@ -11,6 +11,7 @@ block mainContent
         .mt-8.mx-auto.max-w-md
             .bg-white.py-8.px-4.shadow.space-y-3
                 form.space-y-4(method="POST" action="/auth/register" novalidate)
+                    input(type="hidden" name="_csrf" value= csrfToken)
                     div
                         label.block.text-sm.uppercase.text-gray-500.mb-2.font-bold(for="name") Tu nombre
                         input#name.w-full.px-3.py-2.border.border-gray-300.rounded-sm.placeholde-gray-400(placeholder="Tu nombre" type="text" name="name" value=user ? user.name : '')

@@ -6,3 +6,6 @@ block mainContent
         h2.text-center.text-lg.mt-2= page
         div(class="bg-white shadow py-8 px-8 rpunded-lg max-w-md mx-auto")
             p(class = error ? "bg-red-500" : "bg-green-500").py-2.px-5.rounded-lg.w-full.font-bold.text-center.text-white= message
+
+            if !error
+                a(href="/auth/login" class="block mt-6 text-center bg-violet-500 text-white font-bold  rounded-md px-2 py-3 hover:bg-violet-600") Iniciar sesión
