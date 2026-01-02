@@ -1,15 +1,13 @@
 import { check, validationResult } from "express-validator";
-import { generateToken } from "../config/csrf.js";
-
-import User from "../models/Usuario.js";
 import { generateId } from "../helpers/tokens.js";
+import User from "../models/Usuario.js";
 
 import { registerEmail } from "../helpers/emails.js";
 
 const registerForm = (req, res) => {
   res.render("auth/register", {
     page: "Crear Cuenta",
-    csrfToken: generateToken(req, res),
+    csrfToken: res.locals.csrfToken,
   });
 };
 
@@ -44,7 +42,7 @@ const register = async (req, res) => {
   if (!result.isEmpty()) {
     return res.render("auth/register", {
       page: "Crear Cuenta",
-      csrfToken: generateToken(req, res),
+      csrfToken: res.locals.csrfToken,
       errors: result.array(),
       user: {
         name,
@@ -57,7 +55,7 @@ const register = async (req, res) => {
   if (userExist) {
     return res.render("auth/register", {
       page: "Crear Cuenta",
-      csrfToken: generateToken(req, res),
+      csrfToken: res.locals.csrfToken,
       errors: [{ msg: "El usuario ya está registrado" }],
       user: {
         name,
@@ -115,16 +113,37 @@ const emailConfirmation = async (req, res) => {
 const loginForm = (req, res) => {
   res.render("auth/login", {
     page: "Iniciar Sesión",
-    csrfToken: generateToken(req, res),
+    csrfToken: res.locals.csrfToken,
   });
 };
 
 const forgotPasswordForm = (req, res) => {
   res.render("auth/forgot-password", {
     page: "Recuperar Contraseña",
-    csrfToken: generateToken(req, res),
+    csrfToken: res.locals.csrfToken,
   });
 };
 
 
-export { loginForm, registerForm, emailConfirmation, register, forgotPasswordForm };
+const resetPassword = async (req, res) => {
+  await check('email').isEmail().withMessage('El email no es válido').run(req);
+  let result = validationResult(req);
+  if (!result.isEmpty()) {
+    return res.render("auth/forgot-password", {
+      page: "Recuperar Contraseña",
+      csrfToken: res.locals.csrfToken,
+      errors: result.array(),
+    });
+  }
+
+
+}
+
+export {
+  emailConfirmation,
+  forgotPasswordForm,
+  loginForm,
+  register,
+  registerForm,
+  resetPassword
+};
