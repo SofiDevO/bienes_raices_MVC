@@ -62,7 +62,7 @@ const register = async (req, res) => {
         email,
       },
     });
-  };
+  }
 
   const user = await User.create({
     name,
@@ -124,9 +124,8 @@ const forgotPasswordForm = (req, res) => {
   });
 };
 
-
 const resetPassword = async (req, res) => {
-  await check('email').isEmail().withMessage('El email no es válido').run(req);
+  await check("email").isEmail().withMessage("El email no es válido").run(req);
   let result = validationResult(req);
   if (!result.isEmpty()) {
     return res.render("auth/forgot-password", {
@@ -135,9 +134,17 @@ const resetPassword = async (req, res) => {
       errors: result.array(),
     });
   }
+  const { email } = req.body;
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    return res.render("auth/forgot-password", {
+      page: "Recuperar Contraseña",
+      csrfToken: res.locals.csrfToken,
+      errors: [{ msg: "Error: El usuario no existe" }],
+    });
+  }
 
-
-}
+};
 
 export {
   emailConfirmation,
@@ -145,5 +152,5 @@ export {
   loginForm,
   register,
   registerForm,
-  resetPassword
+  resetPassword,
 };
