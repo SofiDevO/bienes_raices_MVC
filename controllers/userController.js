@@ -2,7 +2,7 @@ import { check, validationResult } from "express-validator";
 import { generateId } from "../helpers/tokens.js";
 import User from "../models/Usuario.js";
 
-import { registerEmail } from "../helpers/emails.js";
+import { registerEmail, resetPasswordEmail } from "../helpers/emails.js";
 
 const registerForm = (req, res) => {
   res.render("auth/register", {
@@ -143,9 +143,31 @@ const resetPassword = async (req, res) => {
       errors: [{ msg: "Error: El usuario no existe" }],
     });
   }
+  // Generate new token
+  user.token = generateId();
+  await user.save();
 
+  // Send email
+  resetPasswordEmail({
+    name: user.name,
+    email: user.email,
+    token: user.token,
+  })
+  // Send confirmation email
+  res.render("templates/message.pug", {
+    page: "Restablecer Contraseña",
+    message: "Hemos enviado un correo para restablecer tu contraseña",
+  });
 };
 
+
+const verifyTokenForm =  (req, res)=> {
+
+}
+
+const newPassword =  (req, res) => {
+
+}
 export {
   emailConfirmation,
   forgotPasswordForm,
@@ -153,4 +175,6 @@ export {
   register,
   registerForm,
   resetPassword,
+  verifyTokenForm,
+  newPassword
 };

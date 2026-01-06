@@ -1,0 +1,24 @@
+extends layout/email-base
+
+block content
+  h2.email-title ¡Hola #{name}! Confirma tu cuenta
+
+  p.email-text ¡Bienvenido a Bienes Raíces! Tu cuenta ya está casi lista.
+
+  p.email-text Para comenzar a disfrutar de todos nuestros servicios, solo necesitas confirmar tu dirección de correo electrónico haciendo clic en el botón de abajo:
+
+  div(style="text-align: center; margin: 30px 0;")
+    a.email-button(href=confirmUrl, target="_blank", rel="noopener") Confirmar mi cuenta
+
+  p.email-text También puedes copiar y pegar este enlace en tu navegador:
+  p.email-text(style="word-break: break-all; color: #667eea; font-family: monospace; background-color: #f3f4f6; padding: 12px; border-radius: 6px; font-size: 14px;") #{confirmUrl}
+
+  p.email-text Una vez confirmada tu cuenta, podrás:
+  ul(style="color: #6b7280; margin: 20px 0; padding-left: 20px;")
+    li Explorar nuestra amplia selección de propiedades
+    li Guardar tus propiedades favoritas
+    li Recibir notificaciones sobre nuevas propiedades
+    li Contactar directamente con los agentes
+
+  p.email-text(style="margin-top: 30px; font-size: 14px; color: #9ca3af;")
+    strong Nota: Este enlace expirará en 24 horas por seguridad.
