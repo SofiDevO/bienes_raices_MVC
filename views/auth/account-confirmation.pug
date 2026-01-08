@@ -3,8 +3,8 @@ block mainContent
     section.py-10
         h1.text-center.text-4xl.font-extrabold Bienes
             span.font-normal Raíces
-        h2.text-center.text-lg.mt-2= page
-        div(class="bg-white shadow py-8 px-8 rpunded-lg max-w-md mx-auto")
+        h2.text-center.text-lg.mt-2.mb-4= page
+        div(class="bg-white shadow py-8 px-8 rounded-lg max-w-md mx-auto mt-10")
             p(class = error ? "bg-red-500" : "bg-green-500").py-2.px-5.rounded-lg.w-full.font-bold.text-center.text-white= message
 
             if !error

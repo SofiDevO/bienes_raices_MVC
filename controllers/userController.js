@@ -161,7 +161,17 @@ const resetPassword = async (req, res) => {
 };
 
 
-const verifyTokenForm =  (req, res)=> {
+const verifyTokenForm = async (req, res)=> {
+  const {token} =  req.params;
+  const user = await User.findOne({ where: { token } });
+
+ if (!user) {
+    return res.render("auth/account-confirmation", {
+      page: "Error al restablecer password",
+      message: "Hubo un error al restablecer tu contraseña. Intentalo de nuevo",
+      error: true,
+    });
+  }
 
 }
 
