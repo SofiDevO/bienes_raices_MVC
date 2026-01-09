@@ -172,7 +172,9 @@ const verifyTokenForm = async (req, res)=> {
       error: true,
     });
   }
+  res.render('auth/reset-password',{
 
+  })
 }
 
 const newPassword =  (req, res) => {
