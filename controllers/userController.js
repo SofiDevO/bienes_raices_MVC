@@ -130,8 +130,8 @@ const resetPassword = async (req, res) => {
   if (!result.isEmpty()) {
     return res.render("auth/forgot-password", {
       page: "Recuperar Contraseña",
-      csrfToken: res.locals.csrfToken,
       errors: result.array(),
+      csrfToken: res.locals.csrfToken,
     });
   }
   const { email } = req.body;
@@ -139,8 +139,8 @@ const resetPassword = async (req, res) => {
   if (!user) {
     return res.render("auth/forgot-password", {
       page: "Recuperar Contraseña",
-      csrfToken: res.locals.csrfToken,
       errors: [{ msg: "Error: El usuario no existe" }],
+      csrfToken: res.locals.csrfToken,
     });
   }
   // Generate new token
@@ -173,13 +173,24 @@ const verifyTokenForm = async (req, res)=> {
     });
   }
   res.render('auth/reset-password',{
-
+    page: 'Restablecer Contraseña',
+    csrfToken: res.locals.csrfToken
   })
 }
 
-const newPassword =  (req, res) => {
-
-}
+const newPassword =  async (req, res) => {
+  const { password } = req.body;
+  await check("password")
+    .isLength({ min: 6 })
+    .withMessage("El password debe tener al menos 6 caracteres")
+    .run(req);
+  // Validate password confirmation
+  await check("password_confirmation")
+    .equals(password)
+    .withMessage("Los passwords no son iguales")
+    .run(req);
+  }
+  console.log("no jala");
 export {
   emailConfirmation,
   forgotPasswordForm,
