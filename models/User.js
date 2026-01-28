@@ -27,4 +27,9 @@ const User = db.define('users', {
     }
 });
 
+// Custom method to compare passwords
+User.prototype.verifyPassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
+}
+
 export default User;

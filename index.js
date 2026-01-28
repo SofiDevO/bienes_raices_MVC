@@ -1,10 +1,10 @@
+import express from 'express';
+import dotenv from 'dotenv';
 import chalk from 'chalk';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
-import express from 'express';
+import usuarioRoutes from './routes/userRouter.js';
 import db from './config/db.js';
 import { csrfMidelware, verifyCsrfToken } from './midelwares/csrfMidelware.js';
-import usuarioRoutes from './routes/userRouter.js';
 
 // Load environment variables
 dotenv.config();
