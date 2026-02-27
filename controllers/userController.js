@@ -2,8 +2,11 @@ import { check, validationResult } from "express-validator";
 import { generateId } from "../helpers/tokens.js";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken';
 import { registerEmail, resetPasswordEmail } from "../helpers/emails.js";
 import { errMessage, handleValidationErrors } from "../helpers/validations.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const registerForm = (req, res) => {
   res.render("auth/register", {
@@ -96,7 +99,7 @@ const loginForm = (req, res) => {
 };
 // Authenticate user (Login)
 const authenticateUser = async (req,res)=>{
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
   await check('email').isEmail().withMessage('Este no es un email válido').run(req)
   await check('password').notEmpty().withMessage('Password es obligatorio').run(req)
   let result = validationResult(req);
@@ -117,9 +120,14 @@ const authenticateUser = async (req,res)=>{
       errMessage("auth/login", "Iniciar Sesión", "El password es incorrecto", res, { email });
       return;
     }
+    const token = jwt.sign({
+      name: user.name,
+      email: user.email
+    },process.env.JWT_SECRET,{
+      expiresIn: '1d'
+    });
+    console.log(token);
 
-    // TODO: Implement session/JWT authentication
-    res.send("Autenticación exitosa");
   };
 
 
